@@ -1,0 +1,63 @@
+https://gist.github.com/MrSaints/8874103
+
+
+var helloAjaxApp = angular.module("helloAjaxApp", []);
+
+helloAjaxApp.controller("CompaniesCtrl", ['$scope', '$http', function($scope, $http) {
+	$scope.companies = [
+	                    { 'name':'Infosys Technologies',
+	                    	'employees': 125000,
+	                    	'headoffice': 'Bangalore'},
+	                    	{ 'name':'Cognizant Technologies',
+		                    	'employees': 100000,
+		                    	'headoffice': 'Bangalore'},
+		                    	{ 'name':'Wipro',
+			                    	'employees': 115000,
+			                    	'headoffice': 'Bangalore'},
+			                    	{ 'name':'Tata Consultancy Services (TCS)',
+				                    	'employees': 150000,
+				                    	'headoffice': 'Bangalore'},				                    	
+	                    ];
+	
+	$scope.addRowAsyncAsJSON = function(){		
+		$scope.companies.push({ 'name':$scope.name, 'employees': $scope.employees, 'headoffice':$scope.headoffice });
+		// Writing it to the server
+		//		
+		var dataObj = {
+				name : $scope.name,
+				employees : $scope.employees,
+				headoffice : $scope.headoffice
+		};	
+		var res = $http.post('/savecompany_json', dataObj);
+		res.success(function(data, status, headers, config) {
+			$scope.message = data;
+		});
+		res.error(function(data, status, headers, config) {
+			alert( "failure message: " + JSON.stringify({data: data}));
+		});		
+		// Making the fields empty
+		//
+		$scope.name='';
+		$scope.employees='';
+		$scope.headoffice='';
+	};
+}]);
+			
+
+
+@RequestMapping(value = "/angularjs-http-service-ajax-post-json-data-code-example", method = RequestMethod.GET)
+public ModelAndView httpServicePostJSONDataExample( ModelMap model ) {
+	return new ModelAndView("httpservice_post_json");
+}
+
+@RequestMapping(value = "/savecompany_json", method = RequestMethod.POST)	
+public  @ResponseBody String saveCompany_JSON( @RequestBody Company company )   {		
+	//
+	// Code processing the input parameters
+	//	
+	return "JSON: The company name: " + company.getName() + ", Employees count: " + company.getEmployees() + ", Headoffice: " + company.getHeadoffice();
+}
+			
+	
+
+
